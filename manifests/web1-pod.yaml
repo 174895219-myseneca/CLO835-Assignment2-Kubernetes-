@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: employees-pod
+  labels:
+    app: employees
+    component: frontend
+spec:
+  containers:
+    - name: employees
+      image: 181380864910.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1-ecr:WebAPP-20240203220735
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      env:
+        - name: DBPWD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root-password
+              key: MYSQL_ROOT_PASSWORD
+        - name: DBPORT
+          value: "3306"
+        - name: DBHOST
+          value: "10.244.0.5"
+        - name: DBUSER
+          value: "root"
+      ports:
+        - containerPort: 8080
+
