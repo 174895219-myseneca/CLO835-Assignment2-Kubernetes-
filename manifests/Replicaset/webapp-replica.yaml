@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: employees-replicaset-v1
+  labels:
+    app: employees
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: employees
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: employees
+        version: v1
+    spec:
+      imagePullSecrets:
+        - name: assg2
+      containers:
+        - name: employees
+          image: 181380864910.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1-ecr:WebAPP-20240203220735
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: DBPWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root-password
+                  key: MYSQL_ROOT_PASSWORD
+            - name: DBPORT
+              value: "3306"
+            - name: DBHOST
+              value: "database-service.sqldb.svc.cluster.local"
+            - name: DBUSER
+              value: "root"
+          ports:
+            - containerPort: 8080
+
